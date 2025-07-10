@@ -1,11 +1,6 @@
 import { Injectable } from '@nestjs/common';
-
-export interface Task {
-  id: number;
-  title: string;
-  description: string;
-  isDone: boolean;
-}
+import { CreateTaskDto } from './dto/create-task.dto';
+import type { Task } from './entities/task.entity';
 
 @Injectable()
 export class TasksService {
@@ -25,12 +20,11 @@ export class TasksService {
     return this.tasks.find((task) => task.id === id) || null;
   }
 
-  // TODO: Use an actual DTO
-  create(createTaskDto: any): Task {
+  create(createTaskDto: CreateTaskDto): Task {
     const task: Task = {
       id: ++this.idSequence,
       title: createTaskDto.title,
-      description: createTaskDto.description,
+      description: createTaskDto.description || '',
       isDone: false,
     };
 
