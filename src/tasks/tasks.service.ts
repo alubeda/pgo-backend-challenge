@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import type { Task } from './entities/task.entity';
+import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Injectable()
 export class TasksService {
@@ -37,5 +38,20 @@ export class TasksService {
     const taskIndex: number = this.tasks.findIndex((task) => task.id === id);
 
     return taskIndex === -1 ? null : this.tasks.splice(taskIndex, 1)[0];
+  }
+
+  async update(id: number, updateTaskDto: UpdateTaskDto): Promise<Task | null> {
+    const task = this.tasks.find((task) => task.id === id) || null;
+    if (!task) {
+      return null;
+    }
+
+    for (const property in updateTaskDto) {
+      if (typeof updateTaskDto[property] !== 'undefined') {
+        task[property] = updateTaskDto[property];
+      }
+    }
+
+    return task;
   }
 }

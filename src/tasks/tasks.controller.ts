@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Delete, Param, Body, ParseIntPipe, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Patch, Param, Body, ParseIntPipe, NotFoundException } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import type { Task } from './entities/task.entity';
+import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Controller('tasks')
 export class TasksController {
@@ -39,5 +40,17 @@ export class TasksController {
     }
 
     return deletedTask;
+  }
+
+  // PATCH /tasks/:id
+  @Patch(':id')
+  async update(@Param('id', ParseIntPipe) id: number, @Body() updateTaskDto: UpdateTaskDto): Promise<Task> {
+    const updatedTask = await this.tasksService.update(id, updateTaskDto);
+
+    if (!updatedTask) {
+      throw new NotFoundException(`Task with id ${id} not found`);
+    }
+
+    return updatedTask;
   }
 }
