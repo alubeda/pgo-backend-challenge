@@ -1,8 +1,22 @@
-import { Controller, Get, Post, Delete, Patch, Param, Body, ParseIntPipe, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Delete,
+  Patch,
+  Param,
+  Query,
+  Body,
+  ParseIntPipe,
+  ParseBoolPipe,
+  ValidationPipe,
+  NotFoundException,
+} from '@nestjs/common';
 import { TasksService } from './tasks.service';
-import { CreateTaskDto } from './dto/create-task.dto';
 import type { Task } from './entities/task.entity';
+import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 
 @Controller('tasks')
 export class TasksController {
@@ -10,8 +24,8 @@ export class TasksController {
 
   // GET /tasks
   @Get()
-  async findAll(): Promise<Task[]> {
-    return this.tasksService.findAll();
+  async findAll(@Query(ValidationPipe) filterDto: GetTasksFilterDto): Promise<Task[]> {
+    return this.tasksService.findAll(filterDto);
   }
 
   // GET /tasks/:id

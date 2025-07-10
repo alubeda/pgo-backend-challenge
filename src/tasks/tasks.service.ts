@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTaskDto } from './dto/create-task.dto';
 import type { Task } from './entities/task.entity';
+import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 
 @Injectable()
 export class TasksService {
@@ -13,7 +14,11 @@ export class TasksService {
     { id: 2, title: 'Task 2', description: 'This is another task', isDone: true },
   ];
 
-  async findAll(): Promise<Task[]> {
+  async findAll(filterDto?: GetTasksFilterDto): Promise<Task[]> {
+    if (typeof filterDto?.isDone === 'boolean') {
+      return this.tasks.filter((task) => task.isDone === filterDto.isDone);
+    }
+
     return this.tasks;
   }
 
