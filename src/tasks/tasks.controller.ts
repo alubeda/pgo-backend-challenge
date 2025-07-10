@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Delete, Param, Body, Query, ParseIntPipe } from '@nestjs/common';
-import { TasksService, Task } from './tasks.service';
+import { Controller, Get, Post, Delete, Param, Body, ParseIntPipe, NotFoundException } from '@nestjs/common';
+import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
+import type { Task } from './entities/task.entity';
 
 @Controller('tasks')
 export class TasksController {
@@ -8,25 +9,35 @@ export class TasksController {
 
   // GET /tasks
   @Get()
-  findAll(): Task[] {
+  async findAll(): Promise<Task[]> {
     return this.tasksService.findAll();
   }
 
   // GET /tasks/:id
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.tasksService.findOne(id);
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Task> {
+    const task = await this.tasksService.findOne(id);
+    if (!task) {
+      throw new NotFoundException(`Task with id ${id} not found`);
+    }
+
+    return task;
   }
 
   // POST /tasks
   @Post()
-  create(@Body() createTaskDto: CreateTaskDto) {
+  async create(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
     return this.tasksService.create(createTaskDto);
   }
 
   // DELETE /tasks/:id
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.tasksService.remove(id);
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<Task> {
+    const deletedTask = await this.tasksService.remove(id);
+    if (!deletedTask) {
+      throw new NotFoundException(`Task with id ${id} not found`);
+    }
+
+    return deletedTask;
   }
 }

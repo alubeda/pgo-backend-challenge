@@ -12,15 +12,15 @@ export class TasksService {
     { id: 2, title: 'Task 2', description: 'This is another task', isDone: true },
   ];
 
-  findAll(): Task[] {
+  async findAll(): Promise<Task[]> {
     return this.tasks;
   }
 
-  findOne(id: number): Task | null {
+  async findOne(id: number): Promise<Task | null> {
     return this.tasks.find((task) => task.id === id) || null;
   }
 
-  create(createTaskDto: CreateTaskDto): Task {
+  async create(createTaskDto: CreateTaskDto): Promise<Task> {
     const task: Task = {
       id: ++this.idSequence,
       title: createTaskDto.title,
@@ -33,7 +33,7 @@ export class TasksService {
     return task;
   }
 
-  remove(id: number): Task | null {
+  async remove(id: number): Promise<Task | null> {
     const taskIndex: number = this.tasks.findIndex((task) => task.id === id);
 
     return taskIndex === -1 ? null : this.tasks.splice(taskIndex, 1)[0];
