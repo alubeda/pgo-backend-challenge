@@ -24,7 +24,7 @@ export class TasksController {
 
   // GET /tasks
   @Get()
-  async findAll(@Query(ValidationPipe) filterDto: GetTasksFilterDto): Promise<Task[]> {
+  async findAll(@Query(ValidationPipe) filterDto?: GetTasksFilterDto): Promise<Task[]> {
     return this.tasksService.findAll(filterDto);
   }
 
